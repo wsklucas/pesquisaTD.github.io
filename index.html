@@ -15,7 +15,7 @@
       color: white;
     }
 
-    h1 {
+    h1, h2 {
       text-align: center;
       margin-bottom: 20px;
     }
@@ -60,7 +60,6 @@
 </head>
 <body>
   <div>
-    <h1>Formulário de Pesquisa</h1>
     <form id="researchForm">
       <div class="form-group">
         <label for="researcher">Pesquisador:</label>
@@ -141,10 +140,12 @@
       })
       .then(response => response.json())
       .then(responseData => {
+        console.log('Response:', responseData);
         if (responseData.result === 'success') {
           alert('Formulário enviado com sucesso!');
           form.reset();
         } else {
+          console.error('Erro:', responseData);
           alert('Erro ao enviar o formulário. Tente novamente.');
         }
       })
@@ -168,10 +169,12 @@
         })
         .then(response => response.json())
         .then(responseData => {
+          console.log('Response:', responseData);
           if (responseData.result === 'success') {
             alert('Status atualizado com sucesso!');
             document.getElementById('updateForm').reset();
           } else {
+            console.error('Erro:', responseData);
             alert('Erro ao atualizar o status. Tente novamente.');
           }
         })
