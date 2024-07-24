@@ -1,7 +1,9 @@
+// Função para servir o HTML do formulário
 function doGet(e) {
   return HtmlService.createHtmlOutputFromFile('index');
 }
 
+// Função para processar o envio do formulário
 function submitForm(formData) {
   const sheet = SpreadsheetApp.openById('1T4r1MD4___m6ZiDkIJ-BSvIWSf4Q4rgW2mw_Zhw2EFc').getSheetByName('Respostas');
   sheet.appendRow([
@@ -16,6 +18,7 @@ function submitForm(formData) {
   ]);
 }
 
+// Função para atualizar o status na planilha
 function updateStatus(code, newStatus) {
   const sheet = SpreadsheetApp.openById('1T4r1MD4___m6ZiDkIJ-BSvIWSf4Q4rgW2mw_Zhw2EFc').getSheetByName('Respostas');
   const data = sheet.getDataRange().getValues();
