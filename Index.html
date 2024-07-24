@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0 auto;
+      max-width: 800px;
+      background-color: #202124;
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    label {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 5px;
+    }
+    .form-group {
+      flex: 1 1 calc(25% - 20px);
+      display: flex;
+      flex-direction: column;
+    }
+    input, textarea, select {
+      background-color: #263238;
+      color: white;
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      align-self: center;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <form id="researchForm">
+      <div class="form-group">
+        <label for="researcher">Pesquisador:</label>
+        <input type="text" id="researcher" name="researcher" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="code">Código:</label>
+        <input type="text" id="code" name="code" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="location">Local:</label>
+        <input type="text" id="location" name="location" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="locality">Localidade:</label>
+        <input type="text" id="locality" name="locality" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="state">UF/Província:</label>
+        <input type="text" id="state" name="state" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="date">DATA DO T.D:</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="found">LOCALIZADO?</label>
+        <select id="found" name="found" required>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+          <option value="Ainda não">Ainda não</option>
+        </select>
+      </div>
+      
+      <button type="button" onclick="handleSubmit()">Enviar</button>
+    </form>
+
+    <h2>Atualizar Status de Localizado</h2>
+    <form id="updateForm">
+      <div class="form-group">
+        <label for="updateCode">Código (para atualizar):</label>
+        <input type="text" id="updateCode" name="updateCode">
+      </div>
+      <div class="form-group">
+        <label for="newFoundStatus">Foi LOCALIZADO?:</label>
+        <select id="newFoundStatus" name="newFoundStatus">
+          <option value="">Selecione</option>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+          <option value="Ainda não">Ainda não</option>
+        </select>
+      </div>
+      <button type="button" onclick="handleUpdate()">Atualizar</button>
+    </form>
+  </div>
+
+  <script>
+    function handleSubmit() {
+      const form = document.getElementById('researchForm');
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+      
+      google.script.run.withSuccessHandler(() => {
+        alert('Formulário enviado com sucesso!');
+        form.reset();
+      }).submitForm(data);
+    }
+
+    function handleUpdate() {
+      const updateCode = document.getElementById('updateCode').value;
+      const newFoundStatus = document.getElementById('newFoundStatus').value;
+
+      if (updateCode && newFoundStatus) {
+        google.script.run.withSuccessHandler(() => {
+          alert('Status atualizado com sucesso!');
+          document.getElementById('updateForm').reset();
+        }).updateStatus(updateCode, newFoundStatus);
+      } else {
+        alert('Por favor, preencha o código e o novo status.');
+      }
+    }
+  </script>
+</body>
+</html>
