@@ -3,94 +3,37 @@
 <head>
   <base target="_top">
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      margin: 0 auto;
-      max-width: 800px;
-      background-color: #202124;
-      color: white;
-    }
-
-    h1, h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-    label {
-      width: 100%;
-      text-align: left;
-      margin-bottom: 5px;
-    }
-    .form-group {
-      flex: 1 1 calc(25% - 20px);
-      display: flex;
-      flex-direction: column;
-    }
-    input, textarea, select {
-      background-color: #263238;
-      color: white;
-      padding: 10px;
-      font-size: 1em;
-      border: none;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      align-self: center;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
+    /* Seu estilo existente */
   </style>
 </head>
 <body>
   <div>
     <form id="researchForm">
+      <!-- Campos do formulário -->
       <div class="form-group">
         <label for="researcher">Pesquisador:</label>
         <input type="text" id="researcher" name="researcher" required>
       </div>
-      
       <div class="form-group">
         <label for="code">Código:</label>
         <input type="text" id="code" name="code" required>
       </div>
-      
       <div class="form-group">
         <label for="location">Local:</label>
         <input type="text" id="location" name="location" required>
       </div>
-      
       <div class="form-group">
         <label for="locality">Localidade:</label>
         <input type="text" id="locality" name="locality" required>
       </div>
-      
       <div class="form-group">
         <label for="state">UF/Província:</label>
         <input type="text" id="state" name="state" required>
       </div>
-      
       <div class="form-group">
         <label for="date">DATA DO T.D:</label>
         <input type="date" id="date" name="date" required>
       </div>
-      
       <div class="form-group">
         <label for="found">LOCALIZADO?</label>
         <select id="found" name="found" required>
@@ -100,7 +43,6 @@
           <option value="Ainda não">Ainda não</option>
         </select>
       </div>
-      
       <button type="button" onclick="handleSubmit()">Enviar</button>
     </form>
 
@@ -111,7 +53,7 @@
         <input type="text" id="updateCode" name="updateCode">
       </div>
       <div class="form-group">
-        <label for="newFoundStatus">Foi LOCALIZADO?:</label>
+        <label for="newFoundStatus">FOI LOCALIZADO?:</label>
         <select id="newFoundStatus" name="newFoundStatus">
           <option value="">Selecione</option>
           <option value="Sim">Sim</option>
@@ -131,58 +73,27 @@
       formData.forEach((value, key) => {
         data[key] = value;
       });
-      
-      fetch('https://script.google.com/macros/s/AKfycbwNA6zVBjgwc4Mg4Ev6jC-YTWBufHLUaV_9g9Nft3ErPYIONvOomyU86yKSZ9vyhB7mxA/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then(response => response.json())
-      .then(responseData => {
-        console.log('Response:', responseData);
-        if (responseData.result === 'success') {
-          alert('Formulário enviado com sucesso!');
-          form.reset();
-        } else {
-          console.error('Erro:', responseData);
-          alert('Erro ao enviar o formulário. Tente novamente.');
-        }
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-        alert('Erro ao enviar o formulário. Verifique o console para mais detalhes.');
-      });
+
+      console.log('Dados enviados para o servidor:', data);
+
+      google.script.run.withSuccessHandler((response) => {
+        alert(response);
+        form.reset();
+      }).submitForm(data);
     }
 
     function handleUpdate() {
       const updateCode = document.getElementById('updateCode').value;
       const newFoundStatus = document.getElementById('newFoundStatus').value;
 
+      console.log('Código para atualizar:', updateCode);
+      console.log('Novo status:', newFoundStatus);
+
       if (updateCode && newFoundStatus) {
-        fetch('https://script.google.com/macros/s/AKfycbwNA6zVBjgwc4Mg4Ev6jC-YTWBufHLUaV_9g9Nft3ErPYIONvOomyU86yKSZ9vyhB7mxA/exec', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code: updateCode, newStatus: newFoundStatus }),
-        })
-        .then(response => response.json())
-        .then(responseData => {
-          console.log('Response:', responseData);
-          if (responseData.result === 'success') {
-            alert('Status atualizado com sucesso!');
-            document.getElementById('updateForm').reset();
-          } else {
-            console.error('Erro:', responseData);
-            alert('Erro ao atualizar o status. Tente novamente.');
-          }
-        })
-        .catch(error => {
-          console.error('Erro:', error);
-          alert('Erro ao atualizar o status. Verifique o console para mais detalhes.');
-        });
+        google.script.run.withSuccessHandler((response) => {
+          alert(response);
+          document.getElementById('updateForm').reset();
+        }).updateStatus(updateCode, newFoundStatus);
       } else {
         alert('Por favor, preencha o código e o novo status.');
       }
